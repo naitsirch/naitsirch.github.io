@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>XMLHttpRequest fails silently when trying to upload a locked file</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>XMLHttpRequest fails silently when trying to upload a locked file</h1>
+        <p>
+            Visit Mozilla's bug entry
+            <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1790788">here</a>.
+        </p>
+        <form action="#" method="post">
+            Chose an excel file, which is opened in LibreOffice
+            <input type="file" name="file" id="file">
+            <button type="submit">
+                Submit
+            </button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.querySelector('form');
+                        
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    var selectedFile = document.getElementById('file').files[0];
+                    var formData = new FormData();
+                    formData.append('file', selectedFile);
+
+                    var request = new XMLHttpRequest();
+                    request.addEventListener("load", (e) => console.log('load status: ' + request.status + ', and e.type is "' + e.type + '".'));
+                    request.addEventListener("error", (e) => console.log('error status: ' + request.status + ', and e.type is "' + e.type + '".'));
+                    request.open("POST", location.pathname);
+                    request.send(formData);
+                });
+            });
+        </script>
+    </body>
+</html>
